@@ -1,6 +1,8 @@
 import time
 import pprint
 import csv
+import sys
+import argparse
 
 import numpy as np
 from tensorflow.keras.models import (
@@ -97,9 +99,20 @@ predict_writer = csv.DictWriter(predict_file, fieldnames=PREDICT_HEADER)
 predict_writer.writeheader()
 predict_file.flush()
 
-for pcap_file in glob.glob("DATA/cicddos2019/sample_pcap/*.pcap"):
-    cap =  pyshark.FileCapture(pcap_file)
-    data_source = pcap_file.split('/')[-1].strip()
+def main(argv):
+    help_string = 'Usage: python3 ids.py --file <pcap file>'
+
+    parser = argparse.ArgumentParser(
+        description="DDoS Detection with CNN model"
+    )
+
+    parser.add_argument('-f', '--file', type=str, help='pcap file')
+
+    args = parser.parse_args(argv)
+    print(args.file)
+
+    cap =  pyshark.FileCapture(args.file)
+    data_source = (args.file).split('/')[-1].strip()
 
     samples = process_live_traffic(
         cap, 
@@ -109,7 +122,6 @@ for pcap_file in glob.glob("DATA/cicddos2019/sample_pcap/*.pcap"):
         traffic_type="all", 
         time_window=time_window
     )
-    
 
     if len(samples) > 0:
         X,Y_true,keys = dataset_to_list_of_fragments(samples)
@@ -137,5 +149,7 @@ for pcap_file in glob.glob("DATA/cicddos2019/sample_pcap/*.pcap"):
         )
         predict_file.flush()
 
-predict_file.close()
+    predict_file.close()
 
+if __name__ == "__main__":
+    main(sys.argv[1:])
