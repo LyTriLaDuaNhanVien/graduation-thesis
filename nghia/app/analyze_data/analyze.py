@@ -1,9 +1,10 @@
-from analyze_data.packet_count_over_time.pcot import pcot_generator
-from analyze_data.bytes_over_time.bot import bot_generator
+from app.pages.monitoring.pcot import pcot_generator
+from app.pages.monitoring.bot import bot_generator
 from scapy.all import rdpcap
 import streamlit as st
 import pandas as pd
 import datetime
+
 class data_analyzer:
     def __init__(self,csv_file) -> None:
         self.csv_file = csv_file
