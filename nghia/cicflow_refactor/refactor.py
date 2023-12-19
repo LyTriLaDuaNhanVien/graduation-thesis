@@ -7,7 +7,7 @@ from flow import Flow
 
 from loguru import logger
 
-pcap_file ="../DATA/real-world-data/capture-20231215-153927.pcap"
+# pcap_file ="../DATA/real-world-data/capture-20231215-153927.pcap"
 
 class Convert:
     def __init__(self, pcap_file):
@@ -81,7 +81,7 @@ class Convert:
 
         return pd.DataFrame(DATA)
 
-t = Convert(pcap_file)   
-file = t.convert_to_dataframe()
-file.to_csv("test.csv",index=False)
+# t = Convert(pcap_file)   
+# file = t.convert_to_dataframe()
+# file.to_csv("test.csv",index=False)
 
