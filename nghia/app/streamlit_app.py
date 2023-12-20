@@ -1,31 +1,44 @@
+import os
 import streamlit as st
-from scapy.all import *
-import matplotlib.pyplot as plt
-import pandas as pd
-import plotly
-import plotly.graph_objs as go
-from analyze_data.test import analysis_page
-from datetime import datetime
+from pages.monitoring import MonitoringCharts
+# from pages.analysis import Analysis
 
-import streamlit as st
-from pages.monitoring.bot import BotChart
-from pages.monitoring.pcot import PcotChart
+file_path = "data_csv/"
+files = [os.path.join(file_path, f) for f in os.listdir(file_path) if os.path.isfile(os.path.join(file_path, f))]
+last_modified_file = max(files, key=os.path.getmtime)
+default_ix = files.index(last_modified_file)
+
+csv_path = st.selectbox(
+   "Select csv files for viewing",
+   files,
+   index=default_ix,
+)
+
+st.write('You selected:', csv_path)
+
+# Initialize data reader
+monitoring_charts = MonitoringCharts(csv_path)
+# analysis = Analysis(csv_path)
 
 # Define the pages
 def Monitoring():
-    # analysis_page()
+   # Display monitoring charts
+    st.header("Monitoring Charts")
 
-    data_reader = "path/to/your.csv"  # Update with your CSV file path
-    bot_chart = BotChart(data_reader)
-    pcot_chart = PcotChart(data_reader)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.pyplot(monitoring_charts.get_top_dst_ip())
 
-    # Display charts
-    st.pyplot(bot_chart.create_chart())
-    st.pyplot(pcot_chart.create_chart())
+    with col2:
+        st.pyplot(monitoring_charts.get_top_dst_port())
+
+    st.pyplot(monitoring_charts.get_bot_chart())
+    st.pyplot(monitoring_charts.get_pcot_chart())
 
 def analysis():
-    st.title("Page 2")
-    st.write("Welcome to Page 2!")
+   # Display analysis chart
+    st.header("Predictive Analysis")
+    st.pyplot(analysis.get_prediction_chart())
 
 def train_model():
     st.title("Page 3")
