@@ -1,7 +1,7 @@
 from . import DataReader
 import matplotlib.pyplot as plt
 
-class BotChart(DataReader):
+class PieChart(DataReader):
     def create_chart(self , src_ip, column_name, n=10):
         # Example chart using the data
         data = self.get_data()
@@ -15,4 +15,4 @@ class BotChart(DataReader):
         plt.figure(figsize=(8, 8))
         plt.pie(counts, labels=counts.index, autopct='%1.1f%%', startangle=140)
         plt.title(f'Top {n} {column_name} for Source IP {src_ip}')
-        plt.show()
+        return plt

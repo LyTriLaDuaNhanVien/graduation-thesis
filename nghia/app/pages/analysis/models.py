@@ -1,6 +1,7 @@
 
 import joblib
-
+import pandas as pd
+import matplotlib.pyplot as plt
 model = joblib.load('../../checkpoints/model.pkl')
 
 # def predict(data):

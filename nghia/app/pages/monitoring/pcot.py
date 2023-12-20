@@ -44,14 +44,38 @@
     
 from . import DataReader
 import matplotlib.pyplot as plt
+import pandas as pd
 
 class PcotChart(DataReader):
+    def filtered_df(self,df):
+        # Assuming df is your DataFrame with columns 'Timestamp', 'Source_IP', 'Destination_IP'
+        # Convert 'Timestamp' to datetime if not already
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+
+        # Set timestamp as index
+        df.set_index('timestamp', inplace=True)
+
+        # Count packets from each source IP
+        source_ip_counts = df['src_ip'].value_counts()
+
+        # Get the top 5 source IPs
+        top_source_ips = source_ip_counts.head(5).index
+
+        # Filter the DataFrame to include only packets from the top 5 source IPs
+        filtered_df = df[df['src_ip'].isin(top_source_ips)]
+
+        # Resample and count packets per minute ('T' for minutes)
+        resampled_df = filtered_df.groupby(['src_ip']).resample('T').size().unstack(level=0).fillna(0)
+        return resampled_df
+    
     def create_chart(self):
         # Example chart using the data
         data = self.get_data()
-        plt.figure()
-        plt.plot(data['another_column'])
-        plt.title('Pcot Chart')
-        plt.xlabel('X-axis')
-        plt.ylabel('Y-axis')
+        print(data)
+        plt.figure(figsize=(15, 6))
+        self.filtered_df(data).plot(ax=plt.gca())
+        plt.title(f'Packet Count Over Time to {"172.31.28.228"}')
+        plt.xlabel('Timestamp')
+        plt.ylabel('Packet Count')
+        plt.legend(title='Source IP')
         return plt

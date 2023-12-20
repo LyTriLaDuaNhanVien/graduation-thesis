@@ -28,7 +28,6 @@ def Monitoring():
     col1, col2 = st.columns(2)
     with col1:
         st.pyplot(monitoring_charts.get_top_dst_ip())
-
     with col2:
         st.pyplot(monitoring_charts.get_top_dst_port())
 
@@ -38,21 +37,21 @@ def Monitoring():
 def analysis():
    # Display analysis chart
     st.header("Predictive Analysis")
-    st.pyplot(analysis.get_prediction_chart())
+    # st.pyplot(analysis.get_prediction_chart())
 
 def train_model():
     st.title("Page 3")
     st.write("Welcome to Page 3!")
 
-# Create a dictionary of pages
+# # Create a dictionary of pages
 pages = {
     "Viewing data": Monitoring,
     "Analysis": analysis,
     "Train Model": train_model,
 }
 
-# Use the sidebar to select the page
+# # Use the sidebar to select the page
 page = st.sidebar.selectbox("Choose a page", list(pages.keys()))
 
-# Display the selected page
+# # Display the selected page
 pages[page]()
