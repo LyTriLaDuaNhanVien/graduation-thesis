@@ -1,23 +1,6 @@
-# import datetime
-# import pandas as pd
-# from matplotlib import pyplot as plt2
-# class bot_generator:
-#     def __init__(self,df) -> None:
-#         self.df = df
-    
-#     def generate_plot_from_df(self):
-
-
-#         return plt2
-    
-#     def get_bot(self):
-#         bot_plt=self.generate_plot_from_df()
-#         return bot_plt
-
 from . import DataReader
 import matplotlib.pyplot as plt
 import pandas as pd
-
 
 
 class BotChart(DataReader):

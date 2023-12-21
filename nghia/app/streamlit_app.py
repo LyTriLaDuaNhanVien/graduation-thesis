@@ -33,21 +33,22 @@ def Monitoring():
 
     st.pyplot(monitoring_charts.get_bot_chart())
     st.pyplot(monitoring_charts.get_pcot_chart())
+    st.pyplot(monitoring_charts.get_fbp_chart())
+    st.pyplot(monitoring_charts.get_fa_chart())
+    st.pyplot(monitoring_charts.get_bulk_chart())
+    st.pyplot(monitoring_charts.get_tcpflags_chart())
 
 def analysis():
    # Display analysis chart
     st.header("Predictive Analysis")
     # st.pyplot(analysis.get_prediction_chart())
 
-def train_model():
-    st.title("Page 3")
-    st.write("Welcome to Page 3!")
 
 # # Create a dictionary of pages
 pages = {
     "Viewing data": Monitoring,
     "Analysis": analysis,
-    "Train Model": train_model,
+    # "Train Model": train_model,
 }
 
 # # Use the sidebar to select the page
