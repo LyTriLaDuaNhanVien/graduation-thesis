@@ -46,7 +46,7 @@ def analysis():
 
 # # Create a dictionary of pages
 pages = {
-    "Viewing data": Monitoring,
+    # "Viewing data": Monitoring,
     "Analysis": analysis,
     # "Train Model": train_model,
 }
