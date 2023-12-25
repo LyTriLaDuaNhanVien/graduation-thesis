@@ -7,7 +7,7 @@ OUTPUT_DIR="DATA/real-world-data"
 INTERFACE="eth0"
 
 # Capture duration in seconds
-DURATION=300
+DURATION=100
 
 while true; do
     # Generate filename with timestamp

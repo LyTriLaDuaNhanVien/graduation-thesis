@@ -1,7 +1,7 @@
 import os
 import streamlit as st
 from pages.monitoring import MonitoringCharts
-# from pages.analysis import Analysis
+from pages.analysis import AnalysisCharts
 
 file_path = "data_csv/"
 files = [os.path.join(file_path, f) for f in os.listdir(file_path) if os.path.isfile(os.path.join(file_path, f))]
@@ -18,7 +18,7 @@ st.write('You selected:', csv_path)
 
 # Initialize data reader
 monitoring_charts = MonitoringCharts(csv_path)
-# analysis = Analysis(csv_path)
+analysis_charts = AnalysisCharts(csv_path)
 
 # Define the pages
 def Monitoring():
@@ -41,12 +41,12 @@ def Monitoring():
 def analysis():
    # Display analysis chart
     st.header("Predictive Analysis")
-    # st.pyplot(analysis.get_prediction_chart())
+    analysis_charts.get_prediction_chart()
 
 
 # # Create a dictionary of pages
 pages = {
-    "Viewing data": Monitoring,
+    # "Viewing data": Monitoring,
     "Analysis": analysis,
     # "Train Model": train_model,
 }
