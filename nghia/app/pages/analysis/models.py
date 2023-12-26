@@ -37,6 +37,16 @@ class PredictAnalysis:
         data[numerical_columns] = min_max_scaler.transform(data[numerical_columns])
 
         return data
+    
+    def preprocess_dl_data(self, data):
+        # Drop columns to fit the model input shape
+        # Update this list based on your model's requirements
+        if "src_ip" in data:
+            data = data.drop(columns=['src_ip', 'dst_ip','src_port','timestamp'], axis=1)
+        else:
+            data = data.drop(columns=['timestamp'], axis=1)
+
+        return data
 
     def preprocess_data(self, data):
         # Drop columns to fit the model input shape
@@ -66,9 +76,9 @@ class PredictAnalysis:
                 print(nn_data.values)
                 nn_result = model.predict(nn_data)
 
-                print(nn_result)
+                result = nn_result.astype(float)
 
-                if all(value == 0 for value in nn_result):
+                if np.all(result == 0.0):
                     code = (f"{model_name} : No malicious packet detected")
                 else:
                     code = (f"{model_name} : Malicious  detected")
@@ -91,9 +101,11 @@ class PredictAnalysis:
 
                 if_result = model.predict(pred_data)
 
-                print(if_result)
+                print("Isolation Forest predict:", if_result)
 
                 if all(value == 0 for value in if_result):
+                    code = (f"{model_name} : No malicious packet detected")
+                elif all(value == -1 for value in if_result):
                     code = (f"{model_name} : No malicious packet detected")
                 else:
                     code = (f"{model_name} : Malicious  detected")
@@ -107,23 +119,25 @@ class PredictAnalysis:
             'Isolation Forest': if_result
         }
 
-        my_select = st.selectbox('Choose data for classify:', options=list(datas.keys()))
+        select_box = list(datas.keys())
+        select_box.insert(0, "<Selelect>")
+        my_select = st.selectbox('Choose data for classify:', options=select_box)
 
         model_pred = pred_data
 
-        if my_select:
+        if my_select != "<Selelect>":
             my_value = datas[my_select]
+            print("my value:", my_value)
             st.write(f"Choose data got predict from model {my_select}")
 
             if my_select == "Neural Network":
-
-                pred_data['model_predictions'] = my_value
-                filtered_df = model_pred[model_pred['model_predictions'] == 1]
+                nn_data['model_predictions'] = my_value
+                filtered_df = nn_data[nn_data['model_predictions'] == 1]
 
                 print(filtered_df.head())
 
                 if filtered_df.empty:
-                    st.write("No data available for training. Please check your filtering criteria.")
+                    st.write("No data available")
 
                 malicios_data = filtered_df.drop(columns=['model_predictions'], axis=1)
 
@@ -132,13 +146,13 @@ class PredictAnalysis:
                 filtered_df["Attack type"] = mapped_predictions
 
             else:
-                nn_data['model_predictions'] = my_value
-                filtered_df = nn_data[nn_data['model_predictions'] == 1]
+                pred_data['model_predictions'] = my_value
+                filtered_df = model_pred[model_pred['model_predictions'] == 1]
 
                 print(filtered_df.head())
 
                 if filtered_df.empty:
-                    st.write("No data available for training. Please check your filtering criteria.")
+                    st.write("No data available")
 
                 malicios_data = filtered_df.drop(columns=['model_predictions'], axis=1)
 
@@ -146,7 +160,9 @@ class PredictAnalysis:
                 mapped_predictions = [self.label_map.get(pred, 'Unknown') for pred in predictions]
                 filtered_df["Attack type"] = mapped_predictions
 
-            return filtered_df
+            # return filtered_df
+        
+            st.write(filtered_df)
 
     def create_prediction_chart(self):
 
