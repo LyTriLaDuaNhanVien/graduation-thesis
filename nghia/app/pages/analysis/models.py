@@ -2,13 +2,11 @@
 import joblib
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.ensemble import RandomForestClassifier
+
 from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.models import load_model
 
 import streamlit as st
-
-model_instance = RandomForestClassifier()
 
 class PredictAnalysis:
     def __init__(
@@ -52,48 +50,102 @@ class PredictAnalysis:
     
     def ml_model(self, data):
 
-        bin_classify = joblib.load("RandomForest.joblib")
+        rf_classify = joblib.load("../checkpoints/RandomForest.joblib")
+        NN_classify = load_model("../checkpoints/neuralNetModel.h5")
+        if_classify = joblib.load("../checkpoints/isolationForest.joblib")
+
+        models = {
+            'Random Forest': rf_classify,
+            'Neural Network': NN_classify,
+            'Isolation Forest': if_classify
+        }
+
+        for model_name, model in models.items():
+            if model_name == 'Neural Network':
+                nn_data = data.drop(columns=['timestamp'], axis=1)
+                nn_result = model.predict(nn_data)
+
+                print(nn_result)
+
+                if all(value == 0 for value in nn_result):
+                    code = (f"{model_name} : No malicious packet detected")
+                else:
+                    code = (f"{model_name} : Malicious  detected")
+                st.code(code, language='python')
+
+            elif model_name == "Random Forest":
+                pred_data = self.preprocess_data(data)
+
+                rf_result = model.predict(pred_data)
+
+                print(rf_result)
+
+                if all(value == 0 for value in rf_result):
+                    code = (f"{model_name} : No malicious packet detected")
+                else:
+                    code = (f"{model_name} : Malicious  detected")
+                st.code(code, language='python')
+            elif model_name == "Isolation Forest":
+                pred_data = self.preprocess_data(data)
+
+                if_result = model.predict(pred_data)
+
+                print(if_result)
+
+                if all(value == 0 for value in if_result):
+                    code = (f"{model_name} : No malicious packet detected")
+                else:
+                    code = (f"{model_name} : Malicious  detected")
+                st.code(code, language='python')
+
         attack_type  = joblib.load("RF_pred_attack.joblib")
 
-        pred_data = self.preprocess_data(data)
+        datas = {
+            'Random Forest': rf_result,
+            'Neural Network': nn_result,
+            'Isolation Forest': if_result
+        }
 
-        print("pred data",pred_data)
+        my_select = st.selectbox('Choose data for classify:', options=list(datas.keys()))
 
-        find_malicious = bin_classify.predict(pred_data.values)
-        print(find_malicious)
+        model_pred = pred_data
 
-        if all(value == 0 for value in find_malicious):
-            st.header("Find no malicious packet")
-            return None
-        else:
-            pred_data['model_predictions'] = find_malicious
-            filtered_df = pred_data[pred_data['model_predictions'] == 1]
+        if my_select:
+            my_value = datas[my_select]
+            st.write(f"Choose data got predict from model {my_select}")
 
-            print(filtered_df.head())
+            if my_select == "Neural Network":
 
-            if filtered_df.empty:
-                st.write("No data available for training. Please check your filtering criteria.")
+                pred_data['model_predictions'] = my_value
+                filtered_df = model_pred[model_pred['model_predictions'] == 1]
 
-            malicios_data = filtered_df.drop(columns=['model_predictions'], axis=1)
+                print(filtered_df.head())
 
-            predictions = attack_type.predict(malicios_data.values)
-            mapped_predictions = [self.label_map.get(pred, 'Unknown') for pred in predictions]
-            filtered_df["Attack type"] = mapped_predictions
+                if filtered_df.empty:
+                    st.write("No data available for training. Please check your filtering criteria.")
+
+                malicios_data = filtered_df.drop(columns=['model_predictions'], axis=1)
+
+                predictions = attack_type.predict(malicios_data.values)
+                mapped_predictions = [self.label_map.get(pred, 'Unknown') for pred in predictions]
+                filtered_df["Attack type"] = mapped_predictions
+
+            else:
+                nn_data['model_predictions'] = my_value
+                filtered_df = nn_data[nn_data['model_predictions'] == 1]
+
+                print(filtered_df.head())
+
+                if filtered_df.empty:
+                    st.write("No data available for training. Please check your filtering criteria.")
+
+                malicios_data = filtered_df.drop(columns=['model_predictions'], axis=1)
+
+                predictions = attack_type.predict(malicios_data.values)
+                mapped_predictions = [self.label_map.get(pred, 'Unknown') for pred in predictions]
+                filtered_df["Attack type"] = mapped_predictions
 
             return filtered_df
-
-    def dl_model(self,):
-
-        pass
-
-    # def predict(self):
-        # Preprocess the data
-        # preprocessed_data = self.preprocess_data(self.data)
-
-        # Make predictions for each row
-        # predictions = self.model.predict(preprocessed_data)
-        # print("predict:", predictions)
-        # return predictions
 
     def create_prediction_chart(self):
 
