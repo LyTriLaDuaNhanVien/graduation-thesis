@@ -105,6 +105,8 @@ class PredictAnalysis:
 
                 if all(value == 0 for value in if_result):
                     code = (f"{model_name} : No malicious packet detected")
+                elif all(value == -1 for value in if_result):
+                    code = (f"{model_name} : No malicious packet detected")
                 else:
                     code = (f"{model_name} : Malicious  detected")
                 st.code(code, language='python')
@@ -125,6 +127,7 @@ class PredictAnalysis:
 
         if my_select != "<Selelect>":
             my_value = datas[my_select]
+            print("my value:", my_value)
             st.write(f"Choose data got predict from model {my_select}")
 
             if my_select == "Neural Network":
