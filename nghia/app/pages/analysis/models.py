@@ -63,6 +63,7 @@ class PredictAnalysis:
         for model_name, model in models.items():
             if model_name == 'Neural Network':
                 nn_data = data.drop(columns=['timestamp'], axis=1)
+                print(nn_data.values)
                 nn_result = model.predict(nn_data)
 
                 print(nn_result)
@@ -150,7 +151,6 @@ class PredictAnalysis:
     def create_prediction_chart(self):
 
         bin_classify = self.ml_model(self.data)
-        
         st.write(bin_classify)
 
         # Generate predictions

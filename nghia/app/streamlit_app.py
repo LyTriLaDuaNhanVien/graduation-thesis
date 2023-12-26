@@ -7,7 +7,7 @@ file_path = "data_csv/"
 files = [os.path.join(file_path, f) for f in os.listdir(file_path) if os.path.isfile(os.path.join(file_path, f))]
 last_modified_file = max(files, key=os.path.getmtime)
 default_ix = files.index(last_modified_file)
-
+st.set_option('deprecation.showPyplotGlobalUse', False)
 csv_path = st.selectbox(
    "Select csv files for viewing",
    files,
@@ -17,19 +17,17 @@ csv_path = st.selectbox(
 st.write('You selected:', csv_path)
 
 # Initialize data reader
-monitoring_charts = MonitoringCharts(csv_path)
-analysis_charts = AnalysisCharts(csv_path)
+
+
 
 # Define the pages
 def Monitoring():
+    monitoring_charts = MonitoringCharts(csv_path)
    # Display monitoring charts
     st.header("Monitoring Charts")
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.pyplot(monitoring_charts.get_top_dst_ip())
-    with col2:
-        st.pyplot(monitoring_charts.get_top_dst_port())
+    monitoring_charts.get_top_dst_ip()
+    monitoring_charts.get_top_dst_port()
 
     st.pyplot(monitoring_charts.get_bot_chart())
     st.pyplot(monitoring_charts.get_pcot_chart())
@@ -41,12 +39,13 @@ def Monitoring():
 def analysis():
    # Display analysis chart
     st.header("Predictive Analysis")
-    analysis_charts.get_prediction_chart()
+    analysis_charts = AnalysisCharts(csv_path)
+    analysis_charts.get_prediction_chart()    
 
 
 # # Create a dictionary of pages
 pages = {
-    # "Viewing data": Monitoring,
+    "Viewing data": Monitoring,
     "Analysis": analysis,
     # "Train Model": train_model,
 }
