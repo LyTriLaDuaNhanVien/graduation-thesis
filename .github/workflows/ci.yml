@@ -52,13 +52,15 @@ jobs:
           pip install pytest pytest-cov
 
       - name: Run pytest with coverage
-        run: pytest --cov=./ --cov-report=xml
+        run: |
+          cd duc 
+          pytest tests --cov-report term --cov-report xml:coverage.xml --cov=./
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v2
         with:
           name: coverage
-          path: coverage.xml
+          path: duc/coverage.xml
 
   run-bandit:
     needs: formatting-and-linting
@@ -72,12 +74,11 @@ jobs:
 
       - name: Run Bandit security analysis
         run: |
-          bandit -r duc -o bandit-report.json -f json
+          cd duc
+          bandit -r . -o bandit-report.json -f json
 
-          if [[ $? -eq 0 ]]; then
-            echo "No security issues found"
-          else
-            echo "Security issues found"
+          if [ $? -ne 0 ]; then
+            echo "Bandit found security issues."
             exit 1
           fi
 
@@ -85,7 +86,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: bandit-report
-          path: bandit-report.json
+          path: duc/bandit-report.json
 
   sonarqube-scan:
     needs: [run-bandit, run-pytest]
@@ -99,13 +100,13 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: bandit-report
-        path: .
+        path: duc
 
     - name: Download Coverage report
       uses: actions/download-artifact@v2
       with:
         name: coverage
-        path: .
+        path: duc
 
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@master
