@@ -28,7 +28,7 @@ jobs:
         run: black --check duc
 
       - name: Run ruff
-        run: ruff --fix
+        run: ruff --check duc
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@master
