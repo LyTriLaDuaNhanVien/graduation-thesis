@@ -52,8 +52,8 @@ jobs:
           pip install pytest pytest-cov
 
       - name: Run pytest with coverage
+        working-directory: ./duc
         run: |
-          cd duc 
           pytest tests --cov-report term --cov-report xml:coverage.xml --cov=./
 
       - name: Upload coverage report
@@ -73,8 +73,8 @@ jobs:
         run: pip install bandit
 
       - name: Run Bandit security analysis
+        working-directory: ./duc
         run: |
-          cd duc
           bandit -r . -o bandit-report.json -f json
 
           if [ $? -ne 0 ]; then
