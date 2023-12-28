@@ -1,6 +1,6 @@
 
 import os
-from fastapi import FastAPI,APIRouter
+from fastapi import APIRouter
 import sqlite3
 
 app = APIRouter()
