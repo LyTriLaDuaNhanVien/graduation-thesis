@@ -20,7 +20,7 @@ class PredictAnalysis:
 
     def load_train_data(self):
 
-        train_data = pd.read_csv("data_train/02-14-2018.csv")
+        train_data = pd.read_csv("data_train/data-100k.csv")
         train_data.drop(['Label'], axis=1,inplace=True)
         train_data.replace([np.inf, -np.inf], np.nan, inplace=True)
         train_data.dropna(inplace=True)

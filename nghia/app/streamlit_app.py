@@ -5,13 +5,13 @@ from pages.analysis import AnalysisCharts
 
 file_path = "data_csv/"
 files = [os.path.join(file_path, f) for f in os.listdir(file_path) if os.path.isfile(os.path.join(file_path, f))]
-last_modified_file = max(files, key=os.path.getmtime)
-default_ix = files.index(last_modified_file)
+# last_modified_file = max(files, key=os.path.getmtime)
+# default_ix = files.index(last_modified_file)
 st.set_option('deprecation.showPyplotGlobalUse', False)
 csv_path = st.selectbox(
    "Select csv files for viewing",
    files,
-   index=default_ix,
+#    index=default_ix,
 )
 
 st.write('You selected:', csv_path)

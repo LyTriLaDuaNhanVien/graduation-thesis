@@ -1,0 +1,53 @@
+name: CI
+
+on: 
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - repo: https://github.com/pre-commit/pre-commit-hooks
+        rev: v2.3.0
+        hooks:
+        -   id: check-yaml
+        -   id: end-of-file-fixer
+        -   id: trailing-whitespace
+
+      - repo: https://github.com/asottile/seed-isort-config
+        rev: 5.11.2
+        hooks:
+        - id: isort
+        name: isort (python)
+
+      - repo: https://github.com/psf/black-pre-commit-mirror
+        rev: 23.12.1
+        hooks:
+          - id: black
+          language_version: python3.8
+          name: black (code formatter)
+
+      - repo: https://github.com/astral-sh/ruff-pre-commit
+      # Ruff version.
+      rev: v0.1.9
+      hooks:
+        # Run the linter.
+        - id: ruff
+          args: [ --fix ]
+        # Run the formatter.
+        - id: ruff-format
+        name: ruff (code linter)
+
+      # Add additional linting/formatting steps here if needed
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        with:
+          sonarqubeUrl: ${{ secrets.SONARQUBE_URL }}
+          sonarqubeToken: ${{ secrets.SONARQUBE_TOKEN }}
+          projectBaseDir: .
