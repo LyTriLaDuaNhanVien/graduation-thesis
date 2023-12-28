@@ -9,15 +9,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
-
       - repo: https://github.com/pre-commit/pre-commit-hooks
         rev: v2.3.0
         hooks:
-        -   id: check-yaml
-        -   id: end-of-file-fixer
-        -   id: trailing-whitespace
+        - id: check-yaml
+        - id: end-of-file-fixer
+        - id: trailing-whitespace
 
       - repo: https://github.com/asottile/seed-isort-config
         rev: 5.11.2
@@ -34,14 +31,14 @@ jobs:
 
       - repo: https://github.com/astral-sh/ruff-pre-commit
       # Ruff version.
-      rev: v0.1.9
-      hooks:
-        # Run the linter.
-        - id: ruff
-          args: [ --fix ]
-        # Run the formatter.
-        - id: ruff-format
-        name: ruff (code linter)
+        rev: v0.1.9
+        hooks:
+          # Run the linter.
+          - id: ruff
+            args: [ --fix ]
+          # Run the formatter.
+          - id: ruff-format
+          name: ruff (code linter)
 
       # Add additional linting/formatting steps here if needed
 
