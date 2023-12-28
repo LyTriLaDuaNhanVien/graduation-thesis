@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  formatting-and-linting:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +22,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install black isort ruff bandit pytest
+          pip install black isort ruff
 
       - name: Run isort
         run: isort .
@@ -35,14 +35,80 @@ jobs:
       - name: Run ruff
         run: ruff check duc 
 
-      - name: run bandit
-        run: bandit -r duc -f json -o bandit-report.json
+    run-pytest:
+      needs: formatting-and-linting
+      runs-on: ubuntu-latest
+      steps:
+        - name: Check out repository code
+          uses: actions/checkout@v2
 
-      - name: SonarQube Scan
+        - name: Set up Python
+          uses: actions/setup-python@v2
+          with:
+            python-version: '3.8'
+
+        - name: Install dependencies
+          run: |
+            pip install pytest pytest-cov
+
+        - name: Run pytest with coverage
+          run: pytest --cov=./ --cov-report=xml
+
+        - name: Upload coverage report
+          uses: actions/upload-artifact@v2
+          with:
+            name: coverage
+            path: coverage.xml
+
+    run-bandit:
+      needs: formatting-and-linting
+      runs-on: ubuntu-latest
+      steps:
+        - name: Check out repository code
+          uses: actions/checkout@v2
+
+        - name: Install Bandit
+          run: pip install bandit
+
+        - name: Run Bandit security analysis
+          run: |
+            bandit -r duc -o bandit-report.json -f json
+
+            if [[ $? -eq 0 ]]; then
+              echo "No security issues found"
+            else
+              echo "Security issues found"
+              exit 1
+            fi
+
+        - name: Upload Bandit report
+          uses: actions/upload-artifact@v2
+          with:
+            name: bandit-report
+            path: bandit-report.json
+
+    sonarqube-scan:
+      needs: [run-bandit, run-pytest]
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Download Bandit report
+        uses: actions/download-artifact@v2
+        with:
+          name: bandit-report
+          path: .
+
+      - name: Download Coverage report
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage
+          path: .
+
+     - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          projectBaseDir: duc
-          args: >
-            -Dsonar.projectKey=Thesis
