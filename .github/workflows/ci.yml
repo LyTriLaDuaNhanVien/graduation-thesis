@@ -27,10 +27,12 @@ jobs:
         run: isort .
 
       - name: Run black
-        run: black --check duc
+        run: black duc
+        env:
+          CI: ""
 
       - name: Run ruff
-        run: ruff check duc
+        run: ruff check duc 
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master

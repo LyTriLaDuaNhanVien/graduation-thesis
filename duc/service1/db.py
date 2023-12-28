@@ -1,2 +1,2 @@
-def connect_to_db():
-    password = "SuperSecretPassword"  # Hardcoded password
+# def connect_to_db():
+#     password = "SuperSecretPassword"  # Hardcoded password
