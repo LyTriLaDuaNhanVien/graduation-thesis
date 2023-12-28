@@ -22,7 +22,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install black isort ruff
+          pip install black isort ruff bandit pytest
 
       - name: Run isort
         run: isort .
