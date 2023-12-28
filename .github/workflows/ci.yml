@@ -35,6 +35,9 @@ jobs:
       - name: Run ruff
         run: ruff check duc 
 
+      - name: run bandit
+        run: bandit -r duc -f json -o bandit-report.json
+
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
