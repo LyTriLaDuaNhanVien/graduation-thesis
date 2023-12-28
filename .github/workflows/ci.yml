@@ -28,6 +28,8 @@ jobs:
 
       - name: Run black
         run: black --check duc
+        env:
+          CI: ""
 
       - name: Run ruff
         run: ruff check duc
