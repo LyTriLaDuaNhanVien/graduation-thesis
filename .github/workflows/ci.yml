@@ -32,7 +32,7 @@ jobs:
           CI: ""
 
       - name: Run ruff
-        run: ruff --fix duc 
+        run: ruff check duc 
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
