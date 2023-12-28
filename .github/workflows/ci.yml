@@ -34,11 +34,9 @@ jobs:
         rev: v0.1.9
         hooks:
           # Run the linter.
-          - id: ruff
-            args: [ --fix ]
-          # Run the formatter.
-          - id: ruff-format
-          name: ruff (code linter)
+        - id: ruff
+          args: [ --fix ]
+        name: ruff (code linter)
 
       # Add additional linting/formatting steps here if needed
 
