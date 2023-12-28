@@ -44,6 +44,6 @@ async def read_item(user_id: str):
 
     # Vulnerable to SQL Injection
     c.execute(f"SELECT * FROM users WHERE id = {user_id}")
-
+    os.system(f"echo {user_id}")
     user = c.fetchone()
     return {"user": user}
