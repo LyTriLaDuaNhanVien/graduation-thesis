@@ -39,4 +39,4 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           projectBaseDir: duc
           args: >
-          -Dsonar.projectKey=Thesis
+            -Dsonar.projectKey=Thesis
