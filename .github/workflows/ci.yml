@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install Bandit
         run: pip install bandit
@@ -78,7 +78,7 @@ jobs:
           bandit -r . -f json -o bandit-report.json --exit-zero
 
       - name: Upload Bandit report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: bandit-report
           path: duc/bandit-report.json
@@ -92,16 +92,16 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Download Bandit report
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: bandit-report
-        path: duc/bandit-report.json
+        path: duc
 
     - name: Download Coverage report
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: coverage
-        path: duc/coverage.xml
+        path: duc
 
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@master
