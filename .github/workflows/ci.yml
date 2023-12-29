@@ -75,7 +75,7 @@ jobs:
       - name: Run Bandit security analysis
         working-directory: ./duc
         run: |
-          bandit -r . -f jso-o bandit-report.json --exit-zero
+          bandit -r . -f json -o bandit-report.json --exit-zero
 
       - name: Upload Bandit report
         uses: actions/upload-artifact@v2
