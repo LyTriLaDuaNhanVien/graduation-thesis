@@ -53,6 +53,6 @@ nghia/DATA
 nghia/output
 nghia/app/data_train
 
-duc/bandit-report.json
-duc/coverage.xml
+# duc/bandit-report.json
+# duc/coverage.xml
 duc/test.sh

@@ -91,17 +91,17 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v2
 
-    - name: Download Bandit report
-      uses: actions/download-artifact@v4
-      with:
-        name: bandit-report
-        path: duc
+    # - name: Download Bandit report
+    #   uses: actions/download-artifact@v4
+    #   with:
+    #     name: bandit-report
+    #     path: duc
 
-    - name: Download Coverage report
-      uses: actions/download-artifact@v4
-      with:
-        name: coverage
-        path: duc
+    # - name: Download Coverage report
+    #   uses: actions/download-artifact@v4
+    #   with:
+    #     name: coverage
+    #     path: duc
 
     - name: Display structure of downloaded files
       run: ls -R duc/
