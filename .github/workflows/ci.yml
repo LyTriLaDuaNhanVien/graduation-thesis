@@ -58,9 +58,10 @@ jobs:
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v2
+        working-directory: ./duc
         with:
           name: coverage
-          path: duc/coverage.xml
+          path: coverage.xml
 
   run-bandit:
     needs: formatting-and-linting
@@ -79,9 +80,10 @@ jobs:
 
       - name: Upload Bandit report
         uses: actions/upload-artifact@v2
+        working-directory: ./duc
         with:
           name: bandit-report
-          path: duc/bandit-report.json
+          path: bandit-report.json
 
   sonarqube-scan:
     needs: [run-bandit, run-pytest]
@@ -93,15 +95,17 @@ jobs:
 
     - name: Download Bandit report
       uses: actions/download-artifact@v2
+      working-directory: ./duc
       with:
         name: bandit-report
-        path: duc
+        path: .
 
     - name: Download Coverage report
       uses: actions/download-artifact@v2
+      working-directory: ./duc
       with:
         name: coverage
-        path: duc
+        path: .
 
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@master
