@@ -49,7 +49,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pytest pytest-cov fastapi
+          pip install pytest httpx pytest-cov fastapi
 
       - name: Run pytest with coverage
         working-directory: ./duc
@@ -75,12 +75,7 @@ jobs:
       - name: Run Bandit security analysis
         working-directory: ./duc
         run: |
-          bandit -r . -o bandit-report.json -f json
-
-          if [ $? -ne 0 ]; then
-            echo "Bandit found security issues."
-            exit 0
-          fi
+          bandit -r . -f jso-o bandit-report.json --exit-zero
 
       - name: Upload Bandit report
         uses: actions/upload-artifact@v2
